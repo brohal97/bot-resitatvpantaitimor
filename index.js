@@ -14,23 +14,17 @@ app.post('/hantar-caption', async (req, res) => {
   const { text } = req.body;
 
   try {
-    const sent = await bot.sendMessage(GROUP_ID, text + '\n\n#trigger_gsheet_caption', {
+    const sent = await bot.sendMessage(process.env.GROUP_ID, text + '\n\n#trigger_gsheet_caption', {
       reply_markup: {
         inline_keyboard: [
-          [{ text: '📸 Upload Resit', callback_data: 'upload_produk' }]
+          [{ text: '📸 Upload Gambar Produk', callback_data: 'upload_produk' }]
         ]
       }
     });
 
     res.status(200).send('✅ Caption dihantar oleh bot');
   } catch (err) {
-    console.error('❌ Gagal hantar caption:', err.message);
-    res.status(500).send('❌ Gagal hantar caption');
+    console.error('❌ Gagal hantar caption:', err.response?.data || err.message);
+    res.status(500).send('❌ Gagal hantar caption: ' + (err.response?.data?.description || err.message));
   }
-});
-
-// Aktifkan server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server berjalan di port ${PORT}`);
 });
