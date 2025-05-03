@@ -5,23 +5,19 @@ const TelegramBot = require('node-telegram-bot-api');
 const app = express();
 app.use(express.json());
 
-const bot = new TelegramBot(process.env.BOT_TOKEN); // 🚫 TIADA polling
-console.log("🤖 BOT Railway AKTIF – Uji Cuba Caption");
+const bot = new TelegramBot(process.env.BOT_TOKEN); // ❌ Tiada polling di Railway
+console.log("🤖 BOT Railway AKTIF – Uji Caption");
 
 app.post('/hantar-caption', async (req, res) => {
   const { text, groupId } = req.body;
 
   if (!text || !groupId) {
-    return res.status(400).send("❌ 'text' atau 'groupId' tidak lengkap");
+    return res.status(400).send("❌ 'text' dan 'groupId' diperlukan");
   }
 
   try {
-    await bot.sendMessage(groupId, text, {
-      reply_markup: {
-        inline_keyboard: [[{ text: '📸 Upload Resit (ujian)', callback_data: 'dummy' }]]
-      }
-    });
-    console.log("✅ Caption berjaya dihantar ke Telegram");
+    await bot.sendMessage(groupId, text);
+    console.log("✅ Caption dihantar:", text);
     res.status(200).send("✅ Caption berjaya dihantar ke Telegram");
   } catch (err) {
     console.error("❌ Gagal hantar caption:", err.message);
