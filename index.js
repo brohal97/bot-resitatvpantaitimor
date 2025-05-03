@@ -436,14 +436,15 @@ const app = express();
 app.use(express.json());
 
 app.post('/hantar-caption', async (req, res) => {
-  const { text, groupId } = req.body;
+  const { text } = req.body;
+  const groupId = process.env.GROUP_ID; // Guna dari .env
 
-  if (!text || !groupId) {
-    return res.status(400).send("❌ 'text' atau 'groupId' tidak lengkap");
+  if (!text) {
+    return res.status(400).send("❌ 'text' tidak lengkap");
   }
 
   try {
-    const sent = await bot.sendMessage(groupId, text, { // ❌ buang '#trigger_gsheet_caption'
+    const sent = await bot.sendMessage(groupId, text, {
       reply_markup: {
         inline_keyboard: [[{ text: '📸 Upload Resit', callback_data: 'upload_produk' }]] 
       }
@@ -459,9 +460,4 @@ app.post('/hantar-caption', async (req, res) => {
     console.error("❌ Gagal hantar caption:", err.message);
     res.status(500).send("❌ Gagal hantar ke Telegram");
   }
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🚀 Express server aktif di port ${PORT}`);
 });
