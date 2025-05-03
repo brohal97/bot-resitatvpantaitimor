@@ -461,3 +461,14 @@ app.post('/hantar-caption', async (req, res) => {
     res.status(500).send("❌ Gagal hantar ke Telegram");
   }
 });
+
+// ✅ WAJIB: Endpoint GET supaya Railway tahu bot hidup
+app.get("/", (req, res) => {
+  res.send("✅ Server hidup dan bot aktif.");
+});
+
+// ✅ WAJIB: Aktifkan Express server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Express server aktif di port ${PORT}`);
+});
