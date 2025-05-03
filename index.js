@@ -6,27 +6,29 @@ const app = express();
 app.use(express.json());
 
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
+console.log("🤖 BOT AKTIF – Versi Ringkas");
 
 app.post('/hantar-caption', async (req, res) => {
   const { text, groupId } = req.body;
 
   if (!text || !groupId) {
-    return res.status(400).send("❌ 'text' atau 'groupId' tidak lengkap");
+    return res.status(400).send("❌ 'text' dan 'groupId' diperlukan");
   }
 
   try {
-    const sent = await bot.sendMessage(groupId, text, {
-      parse_mode: "Markdown"
+    await bot.sendMessage(groupId, text, {
+      reply_markup: {
+        inline_keyboard: [[{ text: '📸 Upload Resit', callback_data: 'upload_produk' }]]
+      }
     });
-    console.log("✅ Caption sent:", sent.message_id);
-    res.status(200).send("✅ Caption berjaya dihantar ke Telegram");
+    res.status(200).send("✅ Caption dihantar ke Telegram");
   } catch (err) {
-    console.error("❌ Gagal hantar caption:", err.message);
+    console.error("❌ Telegram Error:", err.message);
     res.status(500).send("❌ Gagal hantar ke Telegram");
   }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server aktif di port ${PORT}`);
+  console.log(`🚀 Server mula di port ${PORT}`);
 });
