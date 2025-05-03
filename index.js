@@ -370,10 +370,8 @@ bot.on('photo', async (msg) => {
   const replyTo = msg.reply_to_message?.message_id || null;
 
   if (!pendingUploads[userId] || !replyTo) {
-    return bot.sendMessage(chatId, `⚠️ Sila tekan butang "Upload Resit" dan reply dengan gambar.`, {
-      reply_to_message_id: messageId
-    });
-  }
+  return; // ❌ Tak perlu hantar apa-apa mesej jika user salah hantar
+}
 
   const { captionText, forceReplyTo, promptMsgId } = pendingUploads[userId];
   const photos = msg.photo;
