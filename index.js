@@ -5,8 +5,8 @@ const TelegramBot = require('node-telegram-bot-api');
 const app = express();
 app.use(express.json());
 
-const bot = new TelegramBot(process.env.BOT_TOKEN); // ❌ Tiada polling di Railway
-console.log("🤖 BOT Railway AKTIF – Uji Caption");
+const bot = new TelegramBot(process.env.BOT_TOKEN); // ❗️JANGAN guna polling
+console.log("🤖 BOT Railway AKTIF – Uji Cuba Caption");
 
 app.post('/hantar-caption', async (req, res) => {
   const { text, groupId } = req.body;
@@ -20,7 +20,7 @@ app.post('/hantar-caption', async (req, res) => {
     console.log("✅ Caption dihantar:", text);
     res.status(200).send("✅ Caption berjaya dihantar ke Telegram");
   } catch (err) {
-    console.error("❌ Gagal hantar caption:", err.message);
+    console.error("❌ Telegram Error:", err.message);
     res.status(500).send("❌ Gagal hantar ke Telegram");
   }
 });
