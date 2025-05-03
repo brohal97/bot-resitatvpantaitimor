@@ -5,30 +5,31 @@ const TelegramBot = require('node-telegram-bot-api');
 const app = express();
 app.use(express.json());
 
-const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
-console.log("🤖 BOT AKTIF – Versi Ringkas");
+const bot = new TelegramBot(process.env.BOT_TOKEN); // 🚫 TIADA polling
+console.log("🤖 BOT Railway AKTIF – Uji Cuba Caption");
 
 app.post('/hantar-caption', async (req, res) => {
   const { text, groupId } = req.body;
 
   if (!text || !groupId) {
-    return res.status(400).send("❌ 'text' dan 'groupId' diperlukan");
+    return res.status(400).send("❌ 'text' atau 'groupId' tidak lengkap");
   }
 
   try {
     await bot.sendMessage(groupId, text, {
       reply_markup: {
-        inline_keyboard: [[{ text: '📸 Upload Resit', callback_data: 'upload_produk' }]]
+        inline_keyboard: [[{ text: '📸 Upload Resit (ujian)', callback_data: 'dummy' }]]
       }
     });
-    res.status(200).send("✅ Caption dihantar ke Telegram");
+    console.log("✅ Caption berjaya dihantar ke Telegram");
+    res.status(200).send("✅ Caption berjaya dihantar ke Telegram");
   } catch (err) {
-    console.error("❌ Telegram Error:", err.message);
+    console.error("❌ Gagal hantar caption:", err.message);
     res.status(500).send("❌ Gagal hantar ke Telegram");
   }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server mula di port ${PORT}`);
+  console.log(`🚀 Express server aktif di port ${PORT}`);
 });
