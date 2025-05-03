@@ -436,17 +436,17 @@ const app = express();
 app.use(express.json());
 
 app.post('/hantar-caption', async (req, res) => {
-  const { text } = req.body;
-  const groupId = process.env.GROUP_ID; // Guna dari .env
+  const { text, groupId: groupIdFromBody } = req.body;
+  const groupId = groupIdFromBody || process.env.GROUP_ID;
 
-  if (!text) {
-    return res.status(400).send("❌ 'text' tidak lengkap");
+  if (!text || !groupId) {
+    return res.status(400).send("❌ 'text' atau 'groupId' tidak lengkap");
   }
 
   try {
     const sent = await bot.sendMessage(groupId, text, {
       reply_markup: {
-        inline_keyboard: [[{ text: '📸 Upload Resit', callback_data: 'upload_produk' }]] 
+        inline_keyboard: [[{ text: '📸 Upload Resit', callback_data: 'upload_produk' }]]
       }
     });
 
