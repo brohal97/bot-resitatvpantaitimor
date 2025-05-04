@@ -392,7 +392,10 @@ bot.on('photo', async (msg) => {
 }
 
   const lines = captionText.split('\n');
-  const formattedCaption = `*${lines[0]}*\n` + lines.slice(1).join('\n');
+  const formattedCaption = `*${lines[0]}*\n` + 
+  lines.slice(1).map(line => {
+    return line.replace(/(rm\s?\d+(\.\d{2})?)/gi, '*$1*');
+  }).join('\n');
 
   await bot.deleteMessage(chatId, messageId).catch(() => {});
   await bot.deleteMessage(chatId, forceReplyTo).catch(() => {});
