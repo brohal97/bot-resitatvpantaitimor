@@ -98,6 +98,7 @@ async function extractTarikhFromImage(fileUrl) {
     const cleanText = ocrText.replace(/\n/g, ' ').replace(/\s+/g, ' ');
     console.log("🧹 Clean Text:", cleanText);
     const tarikh = detectAndFormatDateFromText(cleanText);
+    console.log("📅 Tarikh dikesan dari OCR:", tarikh); // ✅ Tambah line ini
     return { tarikh, ocrText };
 
   } catch (err) {
