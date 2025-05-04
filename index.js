@@ -29,10 +29,13 @@ const bulanMap = {
 };
 
 function detectAndFormatDateFromText(text) {
-  text = text.toLowerCase();
+  text = text
+    .toLowerCase()
+    .replace(/[\.\-–—‑]/g, ' ') // Tambahan penting: tukar semua simbol pemisah kepada space
+    .replace(/\s+/g, ' ');      // Padam space berulang
 
-  // Format: 10 Jan 2025 / 10Jan2025
-  const regex = /\b(\d{1,2})\s*([a-z]{3,9})\s*(\d{2,4})\b/g;
+  // Format: 10 Jan 2025
+  const regex = /\b(\d{1,2})\s+([a-z]{3,9})\s+(\d{2,4})\b/g;
   let match;
   while ((match = regex.exec(text)) !== null) {
     let [_, day, monthStr, year] = match;
@@ -64,8 +67,8 @@ function detectAndFormatDateFromText(text) {
     return `${day.padStart(2, '0')}/${month}/${year}`;
   }
 
-  // Format: 10-01-2025 atau 10/01/25 atau 10 01 2025
-  const altRegex = /\b(\d{1,2})[\s\-\/\.]{1,2}(\d{1,2})[\s\-\/\.]{1,2}(\d{2,4})\b/;
+  // Format: 10 01 2025 atau 10 1 25
+  const altRegex = /\b(0?[1-9]|[12][0-9]|3[01])\s(0?[1-9]|1[0-2])\s(\d{2,4})\b/;
   const altMatch = text.match(altRegex);
   if (altMatch) {
     let [_, day, month, year] = altMatch;
