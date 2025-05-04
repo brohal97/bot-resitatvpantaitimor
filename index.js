@@ -31,10 +31,20 @@ const bulanMap = {
 function detectAndFormatDateFromText(text) {
   text = text
     .toLowerCase()
-    .replace(/[\.\-–—‑]/g, ' ') // Tambahan penting: tukar semua simbol pemisah kepada space
-    .replace(/\s+/g, ' ');      // Padam space berulang
+    .replace(/[\n\r]+/g, ' ')
+    .replace(/[–—‑]+/g, '-')      // normalize dash
+    .replace(/\s+/g, ' ')         // buang extra spacing
 
-  // Format: 10 Jan 2025
+  // ✅ Format paling biasa: dd-mm-yyyy / dd/mm/yyyy / dd.mm.yyyy
+  const altRegex = /\b(0?[1-9]|[12][0-9]|3[01])[-\/\. ](0?[1-9]|1[0-2])[-\/\. ](\d{2,4})\b/;
+  const altMatch = text.match(altRegex);
+  if (altMatch) {
+    let [_, day, month, year] = altMatch;
+    if (year.length === 2) year = year > 30 ? `19${year}` : `20${year}`;
+    return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
+  }
+
+  // ✅ Format: 10 Jan 2025
   const regex = /\b(\d{1,2})\s+([a-z]{3,9})\s+(\d{2,4})\b/g;
   let match;
   while ((match = regex.exec(text)) !== null) {
@@ -45,18 +55,7 @@ function detectAndFormatDateFromText(text) {
     return `${day.padStart(2, '0')}/${month}/${year}`;
   }
 
-  // Format tanpa space: 10Jan2025
-  const noSpaceRegex = /(\d{1,2})([a-z]{3,9})(\d{2,4})/i;
-  const noSpaceMatch = text.match(noSpaceRegex);
-  if (noSpaceMatch) {
-    let [_, day, monthStr, year] = noSpaceMatch;
-    const month = bulanMap[monthStr.toLowerCase()];
-    if (!month) return null;
-    if (year.length === 2) year = year > 30 ? `19${year}` : `20${year}`;
-    return `${day.padStart(2, '0')}/${month}/${year}`;
-  }
-
-  // Format: Jan 1 2025
+  // ✅ Format: Jan 10 2025
   const monthFirstRegex = /([a-z]{3,9})\s+(\d{1,2})\s+(\d{2,4})/i;
   const monthFirstMatch = text.match(monthFirstRegex);
   if (monthFirstMatch) {
@@ -66,15 +65,6 @@ function detectAndFormatDateFromText(text) {
     if (year.length === 2) year = year > 30 ? `19${year}` : `20${year}`;
     return `${day.padStart(2, '0')}/${month}/${year}`;
   }
-
-  // Format: 10-01-2025, 10/01/25, 10.01.2025, 10 01 2025
-const altRegex = /\b(0?[1-9]|[12][0-9]|3[01])[\s\-\/\.](0?[1-9]|1[0-2])[\s\-\/\.](\d{2,4})\b/;
-const altMatch = text.match(altRegex);
-if (altMatch) {
-  let [_, day, month, year] = altMatch;
-  if (year.length === 2) year = year > 30 ? `19${year}` : `20${year}`;
-  return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
-}
 
   return null;
 }
