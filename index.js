@@ -96,6 +96,7 @@ async function extractTarikhFromImage(fileUrl) {
     console.log("📜 OCR TEXT:\n", ocrText);
 
     const cleanText = ocrText.replace(/\n/g, ' ').replace(/\s+/g, ' ');
+    console.log("🧹 Clean Text:", cleanText);
     const tarikh = detectAndFormatDateFromText(cleanText);
     return { tarikh, ocrText };
 
