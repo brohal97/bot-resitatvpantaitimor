@@ -68,7 +68,7 @@ function detectAndFormatDateFromText(text) {
   }
 
   // Format: 10-01-2025, 10/01/25, 10.01.2025, 10 01 2025
-const altRegex = /\b(\d{1,2})[\s\-\/\.](\d{1,2})[\s\-\/\.](\d{2,4})\b/;
+const altRegex = /\b(0?[1-9]|[12][0-9]|3[01])[\s\-\/\.](0?[1-9]|1[0-2])[\s\-\/\.](\d{2,4})\b/;
 const altMatch = text.match(altRegex);
 if (altMatch) {
   let [_, day, month, year] = altMatch;
