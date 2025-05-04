@@ -67,14 +67,14 @@ function detectAndFormatDateFromText(text) {
     return `${day.padStart(2, '0')}/${month}/${year}`;
   }
 
-  // Format: 10 01 2025 atau 10 1 25
-  const altRegex = /\b(0?[1-9]|[12][0-9]|3[01])\s(0?[1-9]|1[0-2])\s(\d{2,4})\b/;
-  const altMatch = text.match(altRegex);
-  if (altMatch) {
-    let [_, day, month, year] = altMatch;
-    if (year.length === 2) year = year > 30 ? `19${year}` : `20${year}`;
-    return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
-  }
+  // Format: 10-01-2025, 10/01/25, 10.01.2025, 10 01 2025
+const altRegex = /\b(\d{1,2})[\s\-\/\.](\d{1,2})[\s\-\/\.](\d{2,4})\b/;
+const altMatch = text.match(altRegex);
+if (altMatch) {
+  let [_, day, month, year] = altMatch;
+  if (year.length === 2) year = year > 30 ? `19${year}` : `20${year}`;
+  return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
+}
 
   return null;
 }
