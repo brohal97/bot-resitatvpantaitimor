@@ -226,28 +226,19 @@ function semakBayarTransport({ ocrText, captionText, tarikhOCR, tarikhCaption })
     return `❌ Tarikh tidak padan.\n📸 Gambar: *${tarikhOCR}*\n✍️ Caption: *${tarikhCaption}*`;
   }
 
-  // 2. Kira jumlah dari senarai produk (abaikan baris 'total')
-  let totalKira = 0;
+  // 2. Ambil jumlah dari baris 'Total'
   const captionLines = captionLower.split('\n');
-  const hargaRegex = /rm\s?(\d+(?:\.\d{1,2})?)/;
-  for (let line of captionLines) {
-    if (/total/.test(line)) continue;
-    const match = line.match(hargaRegex);
-    if (match) totalKira += parseFloat(match[1]);
-  }
-
-  // 3. Ambil jumlah dari baris 'Total'
   const totalLine = captionLines.find(line => /total/.test(line) && /(rm|myr)/.test(line));
   const jumlahCaptionRaw = totalLine?.match(/(rm|myr)\s?\d{1,3}(,\d{3})*(\.\d{2})?/);
 
-  // 4. Cari jumlah dalam OCR (mesti ada RM/MYR sahaja)
+  // 3. Cari jumlah dalam OCR (mesti ada RM/MYR sahaja)
   const jumlahOCRraw = ocrLower.match(/(rm|myr)\s?\d{1,3}(,\d{3})*(\.\d{2})?/);
 
   if (!jumlahOCRraw || !jumlahCaptionRaw) {
     return `❌ Jumlah tidak dapat dipastikan.`;
   }
 
-  // 5. Normalize dan bandingkan
+  // 4. Normalize dan bandingkan
   function normalizeJumlah(str) {
     return parseFloat(
       str.replace(/,/g, '').replace(/(rm|myr)/gi, '').trim()
@@ -256,11 +247,6 @@ function semakBayarTransport({ ocrText, captionText, tarikhOCR, tarikhCaption })
 
   const jumlahOCR = normalizeJumlah(jumlahOCRraw[0]);
   const jumlahCaption = normalizeJumlah(jumlahCaptionRaw[0]);
-  const jumlahKiraan = totalKira.toFixed(2);
-
-  if (jumlahKiraan !== jumlahCaption) {
-    return `❌ Jumlah dalam baris TOTAL (RM${jumlahCaption}) tidak sama dengan hasil kiraan (RM${jumlahKiraan}).`;
-  }
 
   if (jumlahOCR !== jumlahCaption) {
     return `❌ Jumlah tidak padan antara slip dan caption.\n📸 Slip: *RM${jumlahOCR}*\n✍️ Caption: *RM${jumlahCaption}*`;
