@@ -229,19 +229,19 @@ function semakBayarTransport({ ocrText, captionText, tarikhOCR, tarikhCaption })
   // 2. Ambil jumlah dari baris 'Total'
   const captionLines = captionLower.split('\n');
   const totalLine = captionLines.find(line => /total/.test(line) && /(rm|myr)/.test(line));
-  const jumlahCaptionRaw = totalLine?.match(/(rm|myr)\s?\d{1,9}([.,]\d{2})?/i);
+  const jumlahCaptionRaw = totalLine?.match(/(rm|myr)\s?\d+(?:[,.]?\d{0,2})?/i);
 
-  // 3. Cari jumlah dalam OCR (mesti ada RM/MYR sahaja)
-  const jumlahOCRraw = ocrLower.match(/(rm|myr)\s?\d{1,9}([.,]\d{2})?/i);
+  // 3. Cari jumlah dalam OCR
+  const jumlahOCRraw = ocrLower.match(/(rm|myr)\s?\d+(?:[,.]?\d{0,2})?/i);
 
   if (!jumlahOCRraw || !jumlahCaptionRaw) {
     return `❌ Jumlah tidak dapat dipastikan.`;
   }
 
-  // 4. Normalize dan bandingkan
+  // 4. Normalize
   function normalizeJumlah(str) {
     return parseFloat(
-      str.replace(/,/g, '').replace(/(rm|myr)/gi, '').trim()
+      str.replace(/[^\d.]/g, '') // Buang semua kecuali nombor & titik
     ).toFixed(2);
   }
 
