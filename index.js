@@ -229,10 +229,10 @@ function semakBayarTransport({ ocrText, captionText, tarikhOCR, tarikhCaption })
   // 2. Ambil jumlah dari baris 'Total'
   const captionLines = captionLower.split('\n');
   const totalLine = captionLines.find(line => /total/.test(line) && /(rm|myr)/.test(line));
-  const jumlahCaptionRaw = totalLine?.match(/(rm|myr)\s?\d+(?:[,.]?\d{0,2})?/i);
+  const jumlahCaptionRaw = totalLine?.match(/(rm|myr)\s?\d{1,3}(,\d{3})*(\.\d{2})?/i);
 
   // 3. Cari jumlah dalam OCR
-  const jumlahOCRraw = ocrLower.match(/(rm|myr)\s?\d+(?:[,.]?\d{0,2})?/i);
+  const jumlahOCRraw = ocrLower.match(/(rm|myr)\s?\d{1,3}(,\d{3})*(\.\d{2})?/i);
 
   if (!jumlahOCRraw || !jumlahCaptionRaw) {
     return `❌ Jumlah tidak dapat dipastikan.`;
